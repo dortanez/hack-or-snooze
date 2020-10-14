@@ -78,7 +78,6 @@ class User {
    * - password: a new password
    * - name: the user's full name
    */
-
   static async create(username, password, name) {
     const response = await axios.post(`${BASE_URL}/signup`, {
       user: {
