@@ -58,8 +58,21 @@ class StoryList {
 
     return newStory;
   }
-    
+  
+  // remove story
+  async deleteStory(user, storyId) {
+    const res = await axios.delete(`${BASE_URL}/stories/${storyId}`, {data: {token: user.loginToken}});
 
+    // filter out the story from the stories list
+    this.stories = this.stories.filter((story) => {
+      story.storyId !== storyId
+    });
+
+    // filter out story from user's stories
+    user.ownStories = user.ownStories.filter((s) => {
+      s.storyId !== storyId
+    });
+  }
 }
 
 
@@ -160,6 +173,7 @@ class User {
     // instantiate Story instances for the user's favorites and ownStories
     existingUser.favorites = response.data.user.favorites.map(s => new Story(s));
     existingUser.ownStories = response.data.user.stories.map(s => new Story(s));
+    
     return existingUser;
   }
 }
