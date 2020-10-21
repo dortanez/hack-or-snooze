@@ -205,7 +205,6 @@ $(async function() {
     }
     return hostName;
   }
-
   /* sync current user information to localStorage */
 
   function syncCurrentUserToLocalStorage() {
