@@ -1,5 +1,4 @@
 $(async function() {
-  // cache some selectors we'll be using quite a bit
   const $body = $("body");
   const $allStoriesList = $("#all-articles-list");
   const $submitForm = $("#submit-form");
@@ -23,11 +22,7 @@ $(async function() {
 
   await checkIfLoggedIn();
 
-  /**
-   * Event listener for logging in.
-   *  If successful, will set up the user instance
-   */
-
+  // event listener for logging in and creating user instance
   $loginForm.on("submit", async function(evt) {
     evt.preventDefault(); // no page-refresh on submit
 
@@ -44,11 +39,7 @@ $(async function() {
     loginAndSubmitForm();
   });
 
-  /**
-   * Event listener for signing up.
-   *  If successful, will setup a new user instance
-   */
-
+  // event listener for signing up
   $createAccountForm.on("submit", async function(evt) {
     evt.preventDefault(); // no page refresh
 
@@ -65,10 +56,7 @@ $(async function() {
     loginAndSubmitForm();
   });
 
-  /**
-   * Log Out Functionality
-   */
-
+ // logout
   $navLogOut.on("click", function() {
     // empty out local storage
     localStorage.clear();
@@ -76,11 +64,7 @@ $(async function() {
     location.reload();
   });
 
-  /**
-   * Submit article event handler.
-   *
-   * */
-
+  // submitting new article
   $submitForm.on("submit", async function(evt) {
     evt.preventDefault(); // no page refresh
 
@@ -119,11 +103,7 @@ $(async function() {
     $submitForm.trigger("reset");
   });
 
-  /**
-   * Starring favorites event handler
-   *
-   */
-
+  // starring favorited articles
   $(".articles-container").on("click", ".star", async function(evt) {
     if (currentUser) {
       const $tgt = $(evt.target);
@@ -144,10 +124,7 @@ $(async function() {
     }
   });
 
-  /**
-   * Event Handler for Clicking Login
-   */
-
+ // event listener for logging in
   $navLogin.on("click", function() {
     // Show the Login and Create Account Forms
     $loginForm.slideToggle();
@@ -155,10 +132,7 @@ $(async function() {
     $allStoriesList.toggle();
   });
 
-  /**
-   * Event Handler for On Your Profile
-   */
-
+  // event listener to clicking username and seeing user profile
   $navUserProfile.on("click", function() {
     // hide everything
     hideElements();
@@ -166,10 +140,7 @@ $(async function() {
     $userProfile.show();
   });
 
-  /**
-   * Event Handler for Navigation Submit
-   */
-
+  // event listener for clicking on submit link
   $navSubmit.on("click", function() {
     if (currentUser) {
       hideElements();
@@ -178,10 +149,7 @@ $(async function() {
     }
   });
 
-  /**
-   * Event handler for Navigation to Favorites
-   */
-
+  // clicking on favorites link
   $body.on("click", "#nav-favorites", function() {
     hideElements();
     if (currentUser) {
@@ -190,20 +158,14 @@ $(async function() {
     }
   });
 
-  /**
-   * Event handler for Navigation to Homepage
-   */
-
+  // clicking on homepage
   $body.on("click", "#nav-all", async function() {
     hideElements();
     await generateStories();
     $allStoriesList.show();
   });
 
-  /**
-   * Event handler for Navigation to My Stories
-   */
-
+  // clicking on my stories link
   $body.on("click", "#nav-my-stories", function() {
     hideElements();
     if (currentUser) {
@@ -213,10 +175,7 @@ $(async function() {
     }
   });
 
-  /**
-   * Event Handler for Deleting a Single Story
-   */
-
+  // event handler for deleting a story
   $ownStories.on("click", ".trash-can", async function(evt) {
     // get the Story's ID
     const $closestLi = $(evt.target).closest("li");
@@ -235,11 +194,7 @@ $(async function() {
     $allStoriesList.show();
   });
 
-  /**
-   * On page load, checks local storage to see if the user is already logged in.
-   * Renders page information accordingly.
-   */
-
+  // check if logged in and render page accordingly
   async function checkIfLoggedIn() {
     // let's see if we're logged in
     const token = localStorage.getItem("token");
@@ -260,7 +215,6 @@ $(async function() {
   /**
    * A rendering function to run to reset the forms and hide the login info
    */
-
   function loginAndSubmitForm() {
     // hide the forms for logging in and signing up
     $loginForm.hide();
@@ -283,7 +237,6 @@ $(async function() {
   /**
    * Build a user profile based on the global "user" instance
    */
-
   function generateProfile() {
     // show your name
     $("#profile-name").text(`Name: ${currentUser.name}`);
@@ -301,7 +254,6 @@ $(async function() {
    * A rendering function to call the StoryList.getStories static method,
    *  which will generate a storyListInstance. Then render it.
    */
-
   async function generateStories() {
     // get an instance of StoryList
     const storyListInstance = await StoryList.getStories();
@@ -322,7 +274,6 @@ $(async function() {
    * - story: an instance of Story
    * - isOwnStory: was the story posted by the current user
    */
-
   function generateStoryHTML(story, isOwnStory) {
     let hostName = getHostName(story.url);
     let starType = isFavorite(story) ? "fas" : "far";
@@ -393,7 +344,6 @@ $(async function() {
   }
 
   /* hide all elements in elementsArr */
-
   function hideElements() {
     const elementsArr = [
       $submitForm,
@@ -418,7 +368,6 @@ $(async function() {
   }
 
   /* see if a specific story is in the user's list of favorites */
-
   function isFavorite(story) {
     let favStoryIds = new Set();
     if (currentUser) {
@@ -428,7 +377,6 @@ $(async function() {
   }
 
   /* simple function to pull the hostname from a URL */
-
   function getHostName(url) {
     let hostName;
     if (url.indexOf("://") > -1) {
@@ -443,7 +391,6 @@ $(async function() {
   }
 
   /* sync current user information to localStorage */
-
   function syncCurrentUserToLocalStorage() {
     if (currentUser) {
       localStorage.setItem("token", currentUser.loginToken);

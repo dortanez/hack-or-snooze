@@ -41,15 +41,7 @@ class StoryList {
 
     return newStory;
   }
-
-  /**
-   * Method to make a DELETE request to remove a particular story
-   *  and also update the StoryList
-   *
-   * - user: the current User instance
-   * - storyId: the ID of the story you want to remove
-   */
-
+  // method to make delete request to remove a story
   async removeStory(user, storyId) {
     await axios({
       url: `${BASE_URL}/stories/${storyId}`,
@@ -72,29 +64,17 @@ class StoryList {
  * The User class to primarily represent the current user.
  *  There are helper methods to signup (create), login, and getLoggedInUser
  */
-
 class User {
   constructor(userObj) {
     this.username = userObj.username;
     this.name = userObj.name;
     this.createdAt = userObj.createdAt;
     this.updatedAt = userObj.updatedAt;
-
-    // these are all set to defaults, not passed in by the constructor
     this.loginToken = "";
     this.favorites = [];
     this.ownStories = [];
   }
-
-  /* Create and return a new user.
-   *
-   * Makes POST request to API and returns newly-created user.
-   *
-   * - username: a new username
-   * - password: a new password
-   * - name: the user's full name
-   */
-
+  // create and return a new user
   static async create(username, password, name) {
     const response = await axios.post(`${BASE_URL}/signup`, {
       user: {
@@ -103,22 +83,15 @@ class User {
         name,
       }
     });
-
     // build a new User instance from the API response
     const newUser = new User(response.data.user);
-
     // attach the token to the newUser instance for convenience
     newUser.loginToken = response.data.token;
 
     return newUser;
   }
 
-  /* Login in user and return user instance.
-
-   * - username: an existing user's username
-   * - password: an existing user's password
-   */
-
+  // Login user and return user instance
   static async login(username, password) {
     const response = await axios.post(`${BASE_URL}/login`, {
       user: {
@@ -126,26 +99,18 @@ class User {
         password,
       }
     });
-
     // build a new User instance from the API response
     const existingUser = new User(response.data.user);
-
     // instantiate Story instances for the user's favorites and ownStories
     existingUser.favorites = response.data.user.favorites.map(s => new Story(s));
     existingUser.ownStories = response.data.user.stories.map(s => new Story(s));
-
     // attach the token to the newUser instance for convenience
     existingUser.loginToken = response.data.token;
 
     return existingUser;
   }
 
-  /** Get user instance for the logged-in-user.
-   *
-   * This function uses the token & username to make an API request to get details
-   *   about the user. Then it creates an instance of user with that info.
-   */
-
+  // get logged in user info
   static async getLoggedInUser(token, username) {
     // if we don't have user info, return null
     if (!token || !username) return null;
@@ -168,12 +133,7 @@ class User {
     return existingUser;
   }
 
-  /**
-   * This function fetches user information from the API
-   *  at /users/{username} using a token. Then it sets all the
-   *  appropriate instance properties from the response with the current user instance.
-   */
-
+  // retrieves user details. data, favorites, own stories
   async retrieveDetails() {
     const response = await axios.get(`${BASE_URL}/users/${this.username}`, {
       params: {
@@ -193,27 +153,18 @@ class User {
     return this;
   }
 
-  /**
-   * Add a story to the list of user favorites and update the API
-   * - storyId: an ID of a story to add to favorites
-   */
-
+  // add story to favorites
   addFavorite(storyId) {
     return this._toggleFavorite(storyId, "POST");
   }
 
-  /**
-   * Remove a story to the list of user favorites and update the API
-   * - storyId: an ID of a story to remove from favorites
-   */
-
+ // remove story from favorites
   removeFavorite(storyId) {
     return this._toggleFavorite(storyId, "DELETE");
   }
 
   /**
    * A helper method to either POST or DELETE to the API
-   * - storyId: an ID of a story to remove from favorites
    * - httpVerb: POST or DELETE based on adding or removing
    */
   async _toggleFavorite(storyId, httpVerb) {
@@ -229,11 +180,7 @@ class User {
     return this;
   }
 
-  /**
-   * Send a PATCH request to the API in order to update the user
-   * - userData: the user properties you want to update
-   */
-
+  // send a patch request to update the user's data
   async update(userData) {
     const response = await axios({
       url: `${BASE_URL}/users/${this.username}`,
@@ -267,10 +214,7 @@ class User {
   }
 }
 
-/**
- * Class to represent a single story.
- */
-
+// class to represent a single story
 class Story {
   /**
    * The constructor is designed to take an object for better readability / flexibility
@@ -286,12 +230,7 @@ class Story {
     this.updatedAt = storyObj.updatedAt;
   }
 
-  /**
-   * Make a PATCH request against /stories/{storyID} to update a single story
-   * - user: an instance of User
-   * - storyData: an object containing the properties you want to update
-   */
-
+  // make patch request to update a story
   async update(user, storyData) {
     const response = await axios({
       url: `${BASE_URL}/stories/${this.storyId}`,
