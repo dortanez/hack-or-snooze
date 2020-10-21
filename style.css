@@ -31,9 +31,7 @@ a:hover {
 }
 
 
-.hidden {
-  display: none;
-}
+
 
 
 
@@ -63,6 +61,10 @@ nav {
   flex-direction: column;
   align-self: center;
   background-color: #f6f6ef;
+}
+
+.hidden {
+  display: none;
 }
 
 form {
