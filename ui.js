@@ -187,6 +187,8 @@ $(async function() {
     // re-generate the story list
     await generateStories();
 
+    location.reload()
+
     // hide everyhing
     hideElements();
 
